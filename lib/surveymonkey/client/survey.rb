@@ -1,24 +1,37 @@
 module Surveymonkey
   class Client
+    # Survey endpoints
     module Survey
 
+      # Return all surveys in an array
       def surveys(options = {})
-        # Return an array of all surveys
         surveys = []
-        response = self.class.get("/surveys", { query: options })
-        if response['total'] > response['per_page']
-          surveys << get_all_pages(response['links'])
-        else
-          surveys << response['data']
-        end
+        response = self.class.get('/surveys', { query: options })
+        surveys << if response['total'] > response['per_page']
+                     get_all_pages(response['links'])
+                   else
+                     response['data']
+                   end
         surveys.flatten
       end
 
-      def survey_details(id, options = {})
-        # Return survey details response
-        self.class.get("/surveys/#{id}/details", { query: options })
+      # Return survey details (survey structure)
+      def survey_details(survey_id, options = {})
+        response = self.class.get("/surveys/#{survey_id}/details", { query: options })
+        response.parsed_response
       end
 
+      # Return all survey responses
+      def survey_responses(survey_id, options = {})
+        response = self.class.get("/surveys/#{survey_id}/responses/bulk", { query: options })
+        response.parsed_response
+      end
+
+      # Return survey responses
+      def survey_response(survey_id, response_id, options = {})
+        response = self.class.get("/surveys/#{survey_id}/responses/#{response_id}/details", { query: options })
+        response.parsed_response
+      end
     end
   end
 end
