@@ -9,10 +9,11 @@ module Surveymonkey
       survey_structure = Surveymonkey::Client.new.survey_details(survey_id)
       response = Surveymonkey::Client.new.survey_response(survey_id, response_id)
       # Create json structrure to return
-      hash['metadata'] = extract_metadata(response)
-      hash['responses'] = []
+      hash[:metadata] = extract_metadata(response)
+      hash[:pages] = []
       # Match responses to survey structure
       response['pages'].each_with_index do |response_page, page_index|
+        hash[:pages] << extract_page_title(survey_structure, page_index)
         response_page['questions'].each_with_index do |response_question, question_index|
           question_structure = survey_structure['pages'][page_index]['questions'].select do |q|
             q['id'] == response_question['id']
@@ -36,15 +37,21 @@ module Surveymonkey
                 answers << question_structure.first['answers']['choices'].select {|a| a['id'] == question_response_answer['choice_id']}.first['text']
               end
             end
-
           end
-          hash['responses'] << { "#{key}": answers }
+          hash[:pages][page_index][:responses] << { "#{key}": answers }
         end
       end
+      hash[:pages].reject! {|p| p[:responses].empty?}
       hash
     end
 
     private
+
+    def extract_page_title(survey_structure, page_index)
+      title = survey_structure['pages'][page_index]['title']
+      { title: title,
+        responses: [] }
+    end
 
     def extract_metadata(response)
       { inquiry_id: response['custom_variables']['id'].gsub(/\[|\]/, ''),
