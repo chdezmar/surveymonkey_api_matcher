@@ -38,7 +38,6 @@ module Surveymonkey
         response = self.class.get("/surveys/#{survey_id}/responses/#{response_id}/details", { query: options })
         response.parsed_response
       end
-
     end
   end
 end

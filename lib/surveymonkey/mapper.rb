@@ -4,9 +4,14 @@ module Surveymonkey
   # Map answers to content
   class Mapper
     def survey_response(survey_id, response_id)
-      hash = []
+      hash = {}
+      # Get survey structure and response
       survey_structure = Surveymonkey::Client.new.survey_details(survey_id)
       response = Surveymonkey::Client.new.survey_response(survey_id, response_id)
+      # Create json structrure to return
+      hash['metadata'] = extract_metadata(response)
+      hash['responses'] = []
+      # Match responses to survey structure
       response['pages'].each_with_index do |response_page, page_index|
         response_page['questions'].each_with_index do |response_question, question_index|
           question_structure = survey_structure['pages'][page_index]['questions'].select do |q|
@@ -33,10 +38,22 @@ module Surveymonkey
             end
 
           end
-          hash << { "#{key}": answers }
+          hash['responses'] << { "#{key}": answers }
         end
       end
       hash
     end
+
+    private
+
+    def extract_metadata(response)
+      { inquiry_id: response['custom_variables']['id'].gsub(/\[|\]/, ''),
+        date_created: response['date_created'],
+        date_modified: response['date_modified'],
+        response_status: response['response_status'],
+        analyze_url: response['analyze_url'],
+        total_time: response['total_time'].to_s }
+    end
+
   end
 end
