@@ -15,6 +15,12 @@ module Surveymonkey
         surveys.flatten
       end
 
+      # Return survey folders
+      def survey_folders(options = {})
+        response = self.class.get("/survey_folders", { query: options })
+        response.parsed_response
+      end
+
       # Return survey details (survey structure)
       def survey_details(survey_id, options = {})
         response = self.class.get("/surveys/#{survey_id}/details", { query: options })
@@ -32,6 +38,7 @@ module Surveymonkey
         response = self.class.get("/surveys/#{survey_id}/responses/#{response_id}/details", { query: options })
         response.parsed_response
       end
+
     end
   end
 end
