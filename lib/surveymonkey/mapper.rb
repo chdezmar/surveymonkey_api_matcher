@@ -26,15 +26,15 @@ module Surveymonkey
 
           if response_question['answers']&.any?
 
-            response_question['answers'].each do |question_response_answer|
-              if question_response_answer['text']
-                answers << question_response_answer['text']
+            response_question['answers'].each do |response_question_answer|
+              if response_question_answer['text']
+                answers << response_question_answer['text']
               end
 
-              if question_response_answer['row_id'] && question_response_answer['choice_id']
-                answers << "#{question_structure.first['answers']['rows'].select {|a| a['id'] == question_response_answer['row_id']}.first['text']}: #{question_structure.first['answers']['choices'].select {|a| a['id'] == question_response_answer['choice_id']}.first['text']}"
-              elsif question_response_answer['choice_id']
-                answers << question_structure.first['answers']['choices'].select {|a| a['id'] == question_response_answer['choice_id']}.first['text']
+              if response_question_answer['row_id'] && response_question_answer['choice_id']
+                answers << "#{value_for('row_id', question_structure, response_question_answer)}: #{value_for('choice_id', question_structure, response_question_answer)}"
+              elsif response_question_answer['choice_id']
+                answers << value_for('choice_id', question_structure, response_question_answer)
               end
             end
           end
@@ -42,10 +42,35 @@ module Surveymonkey
         end
       end
       hash[:pages].reject! {|p| p[:responses].empty?}
+      group_pages_by_title(hash)
       hash
     end
 
     private
+
+
+    def value_for(name, question_structure, response_question_answer)
+      case name
+      when 'row_id'
+        question_structure.first['answers']['rows'].select {|a| a['id'] == response_question_answer['row_id']}.first['text']
+      when 'choice_id'
+        question_structure.first['answers']['choices'].select {|a| a['id'] == response_question_answer['choice_id']}.first['text']
+      end
+    end
+
+    def group_pages_by_title(hash)
+      page_title = nil
+      pages_grouped_by_title = []
+      hash[:pages].each do |page|
+        if page[:title] != page_title
+          pages_grouped_by_title << page
+          page_title = page[:title]
+        else
+          pages_grouped_by_title.last[:responses] << page[:responses]
+        end
+      end
+      hash[:pages] = pages_grouped_by_title
+    end
 
     def extract_page_title(survey_structure, page_index)
       title = survey_structure['pages'][page_index]['title']
