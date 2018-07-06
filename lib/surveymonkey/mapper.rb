@@ -87,7 +87,7 @@ module Surveymonkey
     end
 
     def extract_metadata(response)
-      { inquiry_id: response['custom_variables']['id'].gsub(/\[|\]/, ''),
+      { id: response['custom_variables'],
         date_created: response['date_created'],
         date_modified: response['date_modified'],
         response_status: response['response_status'],
