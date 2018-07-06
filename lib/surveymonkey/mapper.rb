@@ -115,7 +115,7 @@ module Surveymonkey
     end
 
     def extract_metadata(response)
-      { id: response['custom_variables'],
+      { custom_variables: response['custom_variables'],
         date_created: response['date_created'],
         date_modified: response['date_modified'],
         response_status: response['response_status'],
