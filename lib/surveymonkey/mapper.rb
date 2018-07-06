@@ -3,12 +3,40 @@ require 'pry-byebug'
 module Surveymonkey
   # Map answers to content
   class Mapper
+    # Structure of response of survey_response.to_json
+    # {
+    #   "metadata": {
+    #     "id": "id",
+    #     "date_created": "date_created",
+    #     "date_modified": "date_modified",
+    #     "response_status": "status",
+    #     "analyze_url": "analyze_url",
+    #     "total_time": "time_in_seconds"
+    #   },
+    #   "pages": [
+    #     {
+    #       "id": "id",
+    #       "title": "title",
+    #       "questions": [
+    #         {
+    #           "id": "id",
+    #           "title": "question_label",
+    #           "answers": [
+    #             {
+    #               "text": "answer_label"
+    #             }
+    #           ]
+    #         }
+    #       ]
+    #     }
+    #   ]
+    # }
     def survey_response(survey_id, response_id)
       hash = {}
       # Get survey structure and response
       survey_structure = Surveymonkey::Client.new.survey_details(survey_id)
       response = Surveymonkey::Client.new.survey_response(survey_id, response_id)
-      # Create json structrure to return
+      # Create hash structure to return
       hash[:metadata] = extract_metadata(response)
       hash[:pages] = []
       # Match responses to survey structure
