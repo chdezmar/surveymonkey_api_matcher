@@ -1,15 +1,13 @@
 # Surveymonkey
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/surveymonkey`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Easily access SurveyMonkey API V3 and avoid matching answers and questions texts.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'surveymonkey'
+gem 'surveymonkey_api'
 ```
 
 And then execute:
@@ -18,21 +16,39 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install surveymonkey
+    $ gem install surveymonkey_api
 
 ## Usage
 
-TODO: Write usage instructions here
+Access endpoints:
 
-## Development
+```ruby
+Surveymonkey::Client.new.surveys
+```
+```ruby
+Surveymonkey::Client.new.survey_folders
+```
+```ruby
+Surveymonkey::Client.new.survey_details(survey_id)
+```
+```ruby
+Surveymonkey::Client.new.survey_responses(survey_id)
+```
+```ruby
+Surveymonkey::Client.new.survey_response(survey_id, response_id)
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Matchers:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+Surveymonkey::Mapper.new.survey_response(survey_id, response_id)
+```
+
+Optional query strings available: https://developer.surveymonkey.com/api/v3/#surveys
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/surveymonkey.
+Bug reports and pull requests are welcome on GitHub at https://github.com/chdezmar/surveymonkey_api.
 
 ## License
 
