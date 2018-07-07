@@ -1,22 +1,11 @@
 # Surveymonkey
 
 Easily access SurveyMonkey API V3 and avoid matching answers and questions texts.
+Working on a different approach.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'surveymonkey_api'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install surveymonkey_api
+Build gem locally and install it.
 
 ## Usage
 
