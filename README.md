@@ -1,7 +1,7 @@
 # Surveymonkey
 
 Easily access SurveyMonkey API V3 and avoid matching answers and questions texts.
-Working on a different approach.
+This was a test. Please check the [Surveymonkey api gem](https://github.com/chdezmar/surveymonkey_api).
 
 ## Installation
 
